@@ -26,6 +26,8 @@ public class PantallaJuego implements Screen {
     private Texture texturaBarraHorizontal;
     private Texture texturaRaqueta;
     private Texture texturaCuadro;
+    //Objeto
+    private Pelota pelota;
 
 
     public PantallaJuego(Pong pong) {
@@ -44,6 +46,12 @@ public class PantallaJuego implements Screen {
 
         //Cargar todas las texturas
         cargarTextura();
+        //crear todos los objetos
+        crearObjetos();
+    }
+
+    private void crearObjetos() {
+        pelota=new Pelota(texturaCuadro,ANCHO/2,ALTO/2);
     }
 
     private void cargarTextura() {
@@ -55,6 +63,8 @@ public class PantallaJuego implements Screen {
     //Esta metodoo dibuja en la pantalla
     @Override
     public void render(float delta) {
+        //actualizar los objetos en la pantalla
+        actualzarObjetos();
         //borrar pantalla
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -68,11 +78,18 @@ public class PantallaJuego implements Screen {
         for (float y=0; y<ALTO;y+=2*texturaCuadro.getHeight()){
             batch.draw(texturaCuadro,ANCHO/2,y);
         }
-        //Dibuja las Raqutas
+        //Dibuja las Raquetas
         batch.draw(texturaRaqueta,0,ALTO/2);
         batch.draw(texturaRaqueta, ANCHO-texturaRaqueta.getWidth(),ALTO/2);
+        //Dibuja la pelotas
+        pelota.render(batch);
         batch.end();
     }
+
+    private void actualzarObjetos() {
+        pelota.mover();
+    }
+
     //se ejecuta ciando la ventana cambia de tamaño
     @Override
     public void resize(int width, int height) {
