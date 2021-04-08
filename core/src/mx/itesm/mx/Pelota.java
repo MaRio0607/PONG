@@ -16,13 +16,21 @@ public class Pelota extends Objeto {
         sprite.draw(batch);
     }
     //actualiza la poscision del sprite
-    public void mover(){
+    public void mover(Raqueta raqueta){
         float xp=sprite.getX();
         float yp=sprite.getY();
         //prueba limites de la dereche-izquierda
         if (xp>=PantallaJuego.ANCHO-sprite.getWidth() || xp<=0){
             DX=-DX;
         }
+        //Prueba colisiones con la raqueta del juegador
+        float xr= raqueta.sprite.getX();
+        float yr=raqueta.sprite.getY();
+        if (xp>=xr && xp==xr+raqueta.sprite.getWidth() &&
+                yp>=yr && yp<=(yr+raqueta.sprite.getHeight()-sprite.getHeight() )){
+            DX=-DX;
+        }
+
         //prueba limites de la Arriba-Abajo
         if (yp>=PantallaJuego.ALTO-sprite.getHeight() || yp<=0){
             DY=-DY;

@@ -3,12 +3,13 @@ package mx.itesm.mx;
 Creado por mario
  */
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -28,6 +29,9 @@ public class PantallaJuego implements Screen {
     private Texture texturaCuadro;
     //Objeto
     private Pelota pelota;
+    //Raqueta
+    private Raqueta raquetaCPU;
+    private Raqueta raquetaPLAY;
 
 
     public PantallaJuego(Pong pong) {
@@ -48,10 +52,14 @@ public class PantallaJuego implements Screen {
         cargarTextura();
         //crear todos los objetos
         crearObjetos();
+        //indica quien escucha y atiende eventos
+        Gdx.input.setInputProcessor(new ProcesadorEntrada());
     }
 
     private void crearObjetos() {
         pelota=new Pelota(texturaCuadro,ANCHO/2,ALTO/2);
+        raquetaCPU=new Raqueta(texturaRaqueta, ANCHO-texturaRaqueta.getWidth(),ALTO/2);
+        raquetaPLAY=new Raqueta(texturaRaqueta,0,ALTO/2);
     }
 
     private void cargarTextura() {
@@ -79,15 +87,18 @@ public class PantallaJuego implements Screen {
             batch.draw(texturaCuadro,ANCHO/2,y);
         }
         //Dibuja las Raquetas
-        batch.draw(texturaRaqueta,0,ALTO/2);
-        batch.draw(texturaRaqueta, ANCHO-texturaRaqueta.getWidth(),ALTO/2);
+        //batch.draw(texturaRaqueta,0,ALTO/2);
+        //batch.draw(texturaRaqueta, ANCHO-texturaRaqueta.getWidth(),ALTO/2);
+        raquetaPLAY.dibujar(batch);
+        raquetaCPU.dibujar(batch);
         //Dibuja la pelotas
         pelota.render(batch);
         batch.end();
     }
 
     private void actualzarObjetos() {
-        pelota.mover();
+        pelota.mover(raquetaPLAY);
+        raquetaCPU.seguirPelota(pelota);
     }
 
     //se ejecuta ciando la ventana cambia de tamaño
@@ -114,5 +125,52 @@ public class PantallaJuego implements Screen {
     @Override
     public void dispose() {
 
+    }
+
+    //Esta clase sirvve para crear un objeta que atienda las instruciones de touch
+    class ProcesadorEntrada implements InputProcessor{
+
+        @Override
+        public boolean keyDown(int keycode) {
+            return false;
+        }
+
+        @Override
+        public boolean keyUp(int keycode) {
+            return false;
+        }
+
+        @Override
+        public boolean keyTyped(char character) {
+            return false;
+        }
+
+        @Override
+        public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+            return false;
+        }
+
+        @Override
+        public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+            return false;
+        }
+
+        @Override
+        public boolean touchDragged(int screenX, int screenY, int pointer) {
+            Vector3 v = new Vector3(screenX,screenY,0);
+            camara.unproject(v);
+            raquetaPLAY.sprite.setY(v.y);
+            return true;
+        }
+
+        @Override
+        public boolean mouseMoved(int screenX, int screenY) {
+            return false;
+        }
+
+        @Override
+        public boolean scrolled(float amountX, float amountY) {
+            return false;
+        }
     }
 }
