@@ -32,7 +32,12 @@ public class PantallaJuego implements Screen {
     //Raqueta
     private Raqueta raquetaCPU;
     private Raqueta raquetaPLAY;
-
+    //Marcador
+    private int puntosJugador=0;
+    private int puntosMaquina=0;
+    private Texto texto;    //Muestra los valores en la pantalla
+    //Estado del juego
+    private Estado estado= Estado.JUGANDO;
 
     public PantallaJuego(Pong pong) {
         this.pong=pong;
@@ -60,6 +65,8 @@ public class PantallaJuego implements Screen {
         pelota=new Pelota(texturaCuadro,ANCHO/2,ALTO/2);
         raquetaCPU=new Raqueta(texturaRaqueta, ANCHO-texturaRaqueta.getWidth(),ALTO/2);
         raquetaPLAY=new Raqueta(texturaRaqueta,0,ALTO/2);
+        //onjeto que dibuja texto
+        texto=new Texto();
     }
 
     private void cargarTextura() {
@@ -73,6 +80,18 @@ public class PantallaJuego implements Screen {
     public void render(float delta) {
         //actualizar los objetos en la pantalla
         actualzarObjetos();
+
+        //prueba si pierde el jugador
+        if (estado==Estado.JUGANDO && pelota.sprite.getX()<5){
+            puntosMaquina++;
+            if (puntosMaquina>=5){
+                //perdio el jugador
+                estado=Estado.PIERDE;
+            }
+            //Reinicia la pelota
+            pelota.sprite.setPosition(ANCHO/2, ALTO/2);
+        }
+
         //borrar pantalla
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -93,12 +112,24 @@ public class PantallaJuego implements Screen {
         raquetaCPU.dibujar(batch);
         //Dibuja la pelotas
         pelota.render(batch);
+        //Dibuja el marcador
+        texto.mostrarMensaje(batch,Integer.toString(puntosJugador),ANCHO/2-ANCHO/6,3*ALTO/4);
+        texto.mostrarMensaje(batch,Integer.toString(puntosMaquina),ANCHO/2+ANCHO/6,3*ALTO/4);
+
+        //pierde
+        if(estado==Estado.PIERDE){
+            texto.mostrarMensaje(batch,"Lo siento, Perdiste...",ANCHO/2,ALTO/2);
+            texto.mostrarMensaje(batch,"Tap Para Continuar...",3*ANCHO/4,ALTO/4);
+
+        }
         batch.end();
     }
 
     private void actualzarObjetos() {
-        pelota.mover(raquetaPLAY);
-        raquetaCPU.seguirPelota(pelota);
+        if (estado==Estado.JUGANDO) {
+            pelota.mover(raquetaPLAY);
+            raquetaCPU.seguirPelota(pelota);
+        }
     }
 
     //se ejecuta ciando la ventana cambia de tamaño
@@ -147,6 +178,12 @@ public class PantallaJuego implements Screen {
 
         @Override
         public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+            if(estado==Estado.PIERDE){
+                puntosJugador=0;
+                puntosMaquina=0;
+                pelota.sprite.setPosition(ANCHO/2,ALTO/2);
+                estado=Estado.JUGANDO;
+            }
             return false;
         }
 
