@@ -82,7 +82,7 @@ public class PantallaJuego implements Screen {
         actualzarObjetos();
 
         //prueba si pierde el jugador
-        if (estado==Estado.JUGANDO && pelota.sprite.getX()<2){
+        if (estado==Estado.JUGANDO && pelota.sprite.getX()<0){
             puntosMaquina++;
             if (puntosMaquina>=5){
                 //perdio el jugador
@@ -132,7 +132,7 @@ public class PantallaJuego implements Screen {
         }
     }
 
-    //se ejecuta ciando la ventana cambia de tamaño
+    //se ejecuta cuando la ventana cambia de tamaño
     @Override
     public void resize(int width, int height) {
     vista.update(width,height);

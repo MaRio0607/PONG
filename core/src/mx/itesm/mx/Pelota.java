@@ -20,7 +20,7 @@ public class Pelota extends Objeto {
         float xp=sprite.getX();
         float yp=sprite.getY();
         //prueba limites de la dereche-izquierda
-        if (xp>=PantallaJuego.ANCHO-sprite.getWidth() || xp<=0){
+        if (xp>=PantallaJuego.ANCHO-sprite.getWidth() ){
             DX=-DX;
         }
         //Prueba colisiones con la raqueta del juegador
