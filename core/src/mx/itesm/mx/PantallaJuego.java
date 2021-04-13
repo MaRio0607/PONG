@@ -82,7 +82,7 @@ public class PantallaJuego implements Screen {
         actualzarObjetos();
 
         //prueba si pierde el jugador
-        if (estado==Estado.JUGANDO && pelota.sprite.getX()<5){
+        if (estado==Estado.JUGANDO && pelota.sprite.getX()<2){
             puntosMaquina++;
             if (puntosMaquina>=5){
                 //perdio el jugador
